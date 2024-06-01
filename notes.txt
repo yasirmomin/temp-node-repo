@@ -1,0 +1,162 @@
+Globals have no window.
+
+Some of the global variables are:
+{
+__dirname - path to the current directory.
+__filename - file name.
+require - funcion to use modules.
+modules - information about current module (file).
+process - information about enviromnment where the program is being executed.
+
+}
+
+module.exports={b,c};//this function is used to share in the app.js
+require(filename) is used to import the data from other files.
+
+different types of exports:
+
+(1)eg: const person={ //an object
+    name:'Yasir'
+}
+module.exports.Person=person
+
+(2)module.exports.z=['Item-1','Item-2']
+
+(3)const b='Yasir';
+const c='Momin';
+module.exports={b,c}
+
+if we have a function inside of the module that we invoke, that code will run
+
+Built in modules in nodejs:
+(1)operating system module
+(2)path module
+(3)file system module
+(4)http module
+
+1-> OS module
+{
+     const os = require('os') //built in operating system module.
+const user=os.userInfo(); // info about current user.
+similarly we can see more functions in vs code just type "os.".
+
+const c={
+    name:os.type(),
+    release:os.release(),
+    totalMem:os.totalmem(),
+    freeMem:os.freemem()
+}
+console.log(c);
+}
+
+2-> PATH module
+{
+   // first create a folder 'content' in that create a 'subfolder' then create a file test.txt
+    const path = require('path')
+    console.log(path.sep)
+    const filePath = path.join('/content/', 'subfolder', 'test.txt') console.log(filePath)
+    const base = path.basename(filePath) console.log(base)
+    const absolute = path.resolve(__dirname, 'content', 'subfolder', 'test.txt') console.log(absolute)
+}
+
+3-> FILE system module
+
+    Two types
+    1. Synchronously Blocking
+    2. Asynchronously non-Blocking
+1-> Synchronous Approach
+   // first create first.txt and second.txt files in the content folder 
+    const {readFileSync, writeFileSync}=require('fs')
+
+    const first =readFileSync('./content/first.txt', 'utf8') //utf8 is the encoding by default if not given 
+    const second =readFileSync('./content/second.txt', 'utf8') 
+    //readFileSync is used to read the file contents
+    //writeFileSync is used to write the file contents
+
+    writeFileSync(
+        './content/result-sync.txt',
+        `Here is the result : ${first}, ${second}`
+    )//this creates the file result-sync.txt ans stores the contents of first and second
+    //writeFileSync overwrites the data but if we want to append any data we use{flag:'a'}
+     writeFileSync(
+        './content/result-sync.txt',
+        `Here is the result : ${first}, ${second}`,
+        {flag:'a'}
+    )
+2-> Asynchronous Approach
+
+it uses a callback function
+
+ex:
+readFile('./content/first.txt', 'utf8', (err, result)=> {
+if (err) {
+console.log(err)
+return;
+}
+const first = result;
+readFile('./content/second.txt','utf8', (err, result)=>{ //if utf8 is not written, then the output will show the buffer.
+
+if (err) {
+console.log(err)
+return;
+}
+const second = result;
+writeFile(
+    './content/result-async.txt',
+        `Here is the result : ${first}, ${second}`,
+        {flag:'a'},(err,result)=>{
+            if (err) {
+            console.log(err)    
+            return;
+    }
+const second = result;
+        })
+})
+})
+
+the above code will not give any output nut the new file will br created
+with the name result-async and the data will be stored in it.
+
+Asynchronous means that task will be going on side by side and other tasks are being
+done at the same time
+Synchronous means it will go step by step.
+
+4-> HTTP module:
+
+const http=require(`http`)
+const server=http.createServer((req,res)=>    // here callback recieves two parameters request and response
+{
+    res.write(`Welcome to our Homepage`)
+    res.end()
+})
+
+server.listen(5000)
+
+//this above is the basic for server listening port. to make it interactive..wrt to url entered 
+see below.
+
+const http=require(`http`)
+const server=http.createServer((req,res)=>
+{
+    if(req.url==='/'){
+        res.end('Welcome to our Homepage')  //Here res.end acts like return
+        }
+        else
+        if(req.url === '/about'){
+            res.end('Here is some info about us')
+        }
+        else
+        res.end(`
+        <h1>OOPS</h1>
+        <p>You entered the wrong url please check again</p>
+        <a href="/">Back to Homepage</a>
+        `)
+    })
+    server.listen(5000);
+//lodash property
+const _=require('lodash')
+const items=[1,[2,[3,[4]]]]
+const newItems=_.flattenDeep(items)
+console.log(newItems)
+
+the output of this code is [ 1, 2, 3, 4 ]
